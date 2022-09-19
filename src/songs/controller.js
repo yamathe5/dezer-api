@@ -1,15 +1,15 @@
 const createError = require("http-errors");
-const debug = require("debug")("app:mopudle-Albums-controller");
+const debug = require("debug")("app:mopudle-Songs-controller");
 debug.enabled = true;
 
-const { AlbumsService } = require("./services");
+const { SongsService } = require("./services");
 const { Response } = require("../common/response");
 
-module.exports.AlbumsController = {
-  getAlbums: async (req, res) => {
+module.exports.SongsController = {
+  getSongs: async (req, res) => {
     try {
-      let albums = await AlbumsService.getAll();
-      Response.success(res, 200, "Lista de albumes", albums);
+      let Songs = await SongsService.getAll();
+      Response.success(res, 200, "Lista de Songs", Songs);
       // res.json(products); comentamos esto xq reesponse.succes ya lo implementa
     } catch (error) {
       debug(error);
@@ -17,16 +17,16 @@ module.exports.AlbumsController = {
       // res.status(500).json({ message: "internal server error" });
     }
   },
-  getAlbum: async (req, res) => {
+  getSong: async (req, res) => {
     try {
       const {
         params: { id },
       } = req;
-      let album = await AlbumsService.getById(id);
-      if (!album) {
+      let Song = await SongsService.getById(id);
+      if (!Song) {
         Response.error(res, new createError.NotFound());
       } else {
-        Response.success(res, 200, `Album: ${id}`, album);
+        Response.success(res, 200, `Song: ${id}`, Song);
         // res.json(product);
       }
     } catch (error) {
@@ -35,13 +35,13 @@ module.exports.AlbumsController = {
       // res.status(500).json({ message: "internal server error" });
     }
   },
-  createAlbum: async (req, res) => {
+  createSong: async (req, res) => {
     try {
       const { body } = req;
       if (!body || Object.keys(body).length === 0) {
         Response.error(res, new createError.BadRequest());
       } else {
-        const insertedId = await AlbumsService.create(body);
+        const insertedId = await SongsService.create(body);
         Response.success(res, 201, "Usuario agregado", insertedId); // res.json(insertedId);
       }
     } catch (error) {
@@ -50,22 +50,22 @@ module.exports.AlbumsController = {
     }
   },
 
-  updateAlbum: async (req, res) => {
+  updateSong: async (req, res) => {
     try {
       let id = req.params.id;
       let body = req.body;
-      let updatedAlbum = await AlbumsService.update(id, body);
-      Response.success(res, 200, "Album actualizado", updatedAlbum);
+      let updatedSong = await SongsService.update(id, body);
+      Response.success(res, 200, "Song actualizado", updatedSong);
     } catch (error) {
       debug(error);
       Response.error(res, new createError.BadRequest());
     }
   },
 
-  deleteAlbum: async (req, res) => {
+  deleteSong: async (req, res) => {
     try {
       let id = req.params.id;
-      let response = await AlbumsService.remove(id);
+      let response = await SongsService.remove(id);
       if (response.deletedCount === 1) {
         debug("Se elimino 1 usuario");
         Response.success(res, 200, "Usuario eliminado", response);
